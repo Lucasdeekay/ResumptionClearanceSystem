@@ -11,10 +11,8 @@ class Student(models.Model):
     email = models.EmailField(unique=True)  # Ensure unique email
 
 
-class ClearanceRequirement(models.Model):
-    """
-    Base model for clearance requirements
-    """
+class ClearanceDocument(models.Model):
+    file = models.FileField(upload_to='clearance_documents/')  # Customize upload path
     description = models.TextField()
     document_type = models.CharField(max_length=255, choices=(
         ('course_form_100l_alpha', 'Course Form (100L Alpha Semester)'),
@@ -31,8 +29,17 @@ class ClearanceRequirement(models.Model):
         ('jamb_admission_letter', 'Jamb Admission Letter'),
         ('du_admission_letter', 'DU Admission Letter'),
         ('letter_of_undertaking', 'Letter of Undertaking'),
+        ('others', 'Others'),
     ))
-    status = models.CharField(max_length=255, choices=(
+
+
+class ClearanceRequirement(models.Model):
+    """
+    Base model for clearance requirements
+    """
+    student = models.ForeignKey(Student, on_delete=models.CASCADE)
+    documents = models.ManyToManyField(ClearanceDocument, blank=True)
+    status = models.CharField(max_length=255, default="pending", choices=(
     ('pending', 'Pending'), ('completed', 'Completed'), ('incomplete', 'Incomplete')))
 
     class Meta:
@@ -88,13 +95,17 @@ class Bursary(ClearanceRequirement):
     """
     Bursary model inherits from ClearanceRequirement
     """
-    total_amount_paid = models.DecimalField(max_digits=10, decimal_places=2)
-    total_fees = models.DecimalField(max_digits=10, decimal_places=2)
-    outstanding_fees = models.DecimalField(max_digits=10, decimal_places=2)
+    total_amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    total_fees = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
+    outstanding_fees = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
 class StudentClearanceRequests(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
-    semester = models.CharField(max_length=255)
+    SEMESTER_CHOICES = (
+        ('alpha', 'Alpha'),
+        ('omega', 'Omega'),
+    )
+    semester = models.CharField(max_length=255, choices=SEMESTER_CHOICES)
 
     SESSION_CHOICES = [(str(y) + '/' + str(y + 1), str(y) + '/' + str(y + 1)) for y in range(2023, 2030)]
     session = models.CharField(max_length=11, choices=SESSION_CHOICES, default=SESSION_CHOICES[0][0])

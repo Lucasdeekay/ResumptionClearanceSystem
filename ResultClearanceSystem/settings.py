@@ -116,6 +116,7 @@ USE_I18N = True
 
 USE_TZ = True
 
+LOGIN_URL = 'login/'
 
 # Static files (served by development server in debug mode)
 STATIC_URL = '/static/'

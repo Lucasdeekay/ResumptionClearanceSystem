@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm,  PasswordChangeForm
 
+from MySite.models import StudentClearanceRequests, Faculty, Department, Hostel, ClearanceDocument
+
 User = get_user_model()
 
 class LoginForm(AuthenticationForm):
@@ -24,3 +26,31 @@ class PasswordChangeForm(PasswordChangeForm):
         self.fields['old_password'].label = ""
         self.fields['new_password1'].label = ""
         self.fields['new_password2'].label = ""
+
+
+class StudentClearanceRequestForm(forms.ModelForm):
+    class Meta:
+        model = StudentClearanceRequests
+        fields = ['faculty', 'department', 'hostel', 'semester', 'session']
+        widgets = {
+            'faculty': forms.Select(choices=Faculty.objects.all().values_list('name', 'name')),
+            'department': forms.Select(choices=Department.objects.all().values_list('name', 'name')),
+            'hostel': forms.Select(choices=Hostel.objects.all().values_list('name', 'name')),
+            'semester': forms.ChoiceField(choices=StudentClearanceRequests.SEMESTER_CHOICES),
+            'session': forms.ChoiceField(choices=StudentClearanceRequests.SESSION_CHOICES),
+        }
+
+
+class StudentClearanceDocumentForm(forms.ModelForm):
+    clearance_type = forms.ChoiceField(choices=(
+        ('department', 'Department'),
+        ('faculty', 'Faculty'),
+        ('hostel', 'Hostel'),
+        ('bursary', 'Bursary'),
+    ))
+    semester = forms.ChoiceField(choices=StudentClearanceRequests.SEMESTER_CHOICES)
+    session = forms.ChoiceField(choices=StudentClearanceRequests.SESSION_CHOICES)
+
+    class Meta:
+        model = ClearanceDocument
+        fields = ['file', 'description', 'document_type', 'clearance_type', 'semester', 'session']
