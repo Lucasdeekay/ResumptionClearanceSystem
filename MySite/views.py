@@ -6,8 +6,9 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
-from .forms import LoginForm, PasswordChangeForm, StudentClearanceRequestForm
-from .models import Student, StudentClearanceRequests, Faculty, Department, Hostel, Bursary
+from .forms import LoginForm, PasswordChangeForm, StudentClearanceRequestForm, StudentClearanceDocumentForm
+from .models import Student, StudentClearanceRequests, Faculty, Department, Hostel, Bursary, ClearanceRequirement, \
+    ClearanceDocument
 
 
 def login_view(request):
@@ -25,6 +26,7 @@ def login_view(request):
     else:
         form = LoginForm()
     context = {'form': form}
+    # return render(request, 'login.html', context)
     return render(request, 'login.html', context)
 
 
@@ -70,15 +72,15 @@ def forgot_password_view(request):
     if request.method == 'POST':
         email = request.POST['email']
         try:
-            user = User.objects.get(email=email)
+            student = Student.objects.get(email=email)
             current_site = get_current_site(request)
             mail_subject = 'Password reset instructions'
             message = render_to_string('forgot_password_email.html', {
-                'user': user,
+                'student': student.id,
                 'domain': current_site.domain,
             })
             email_from = None  # Replace with your email address
-            email_to = user.email
+            email_to = student.email
             send_mail(mail_subject, message, email_from, [email_to])
             context = {'message': 'A password reset link has been sent to your email.'}
             return render(request, 'forgot_password_sent.html', context)
@@ -92,39 +94,44 @@ def forgot_password_view(request):
 
 def retrieve_password_view(request, reset_uid):
     try:
-        user = User.objects.get(pk=reset_uid)
+        student = Student.objects.get(pk=reset_uid)
     except User.DoesNotExist:
         return redirect('login')  # Redirect to login if user not found
 
     if request.method == 'POST':
-        form = PasswordChangeForm(user, request.POST)
+        form = PasswordChangeForm(student, request.POST)
         if form.is_valid():
-            form.save()
+            password = form.clean_new_password()
+            student.set_password(password)
+            student.save()
             return redirect('login')  # Redirect to login after successful password change
     else:
-        form = PasswordChangeForm(user)
+        form = PasswordChangeForm(student)
     context = {'form': form}
     return render(request, 'change_password.html', context)
 
 
+@login_required
 def change_password_view(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = PasswordChangeForm(request.user, request.POST)
-            if form.is_valid():
-                form.save()
-                return redirect('login')  # Redirect to login after successful password change
-        else:
-            form = PasswordChangeForm(request.user)
-    else:
-        return redirect('login')  # Redirect to login if user is not authenticated
-    context = {'form': form}
-    return render(request, 'change_password.html', context)
+    # student = Student.objects.get(user=request.user)
+    student = 2
+    if request.method == 'POST':
+        old_password = request.POST['old_password']
+        new_password = request.POST['new_password']
+        confirm_password = request.POST['confirm_password']
+        if new_password == confirm_password and student.user.check_password(old_password):
+            student.set_password(new_password)
+            student.save()
+            return redirect('student_dashboard')  # Redirect to login after successful password change
+
+    return render(request, 'change_password.html')
 
 
+@login_required
 def logout_view(request):
     logout(request)
     return redirect('login')  # Redirect to login after successful logout
+
 
 @login_required
 def student_dashboard_view(request):
@@ -135,17 +142,16 @@ def student_dashboard_view(request):
     context = {'student': student}
     return render(request, 'student_dashboard.html', context)
 
+
 @login_required
 def student_clearance_request(request):
     if request.user.is_staff or request.user.is_superuser:
         return redirect('home')  # Redirect staff/superuser to home
 
-    student = request.user.student  # Assuming Student has a user FK
+    student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
 
     if request.method == 'GET':
-        form = StudentClearanceRequestForm(initial={
-            'student': student,
-        })
+        form = StudentClearanceRequestForm()
     else:
         form = StudentClearanceRequestForm(request.POST)
         if form.is_valid():
@@ -172,19 +178,16 @@ def student_clearance_request(request):
                 student=student,
                 semester=form.cleaned_data['semester'],
                 session=form.cleaned_data['session'],
-                faculty_clearance=faculty_clearance,
-                department_clearance=department_clearance,
-                hostel_clearance=hostel_clearance,
-                bursary_clearance=bursary_clearance,
+                faculty=faculty_clearance,
+                department=department_clearance,
+                hostel=hostel_clearance,
+                bursary=bursary_clearance,
             )
+            clearance_request.save()
             return redirect('student_dashboard')  # Redirect to student dashboard
 
     context = {'form': form}
     return render(request, 'student_clearance_request.html', context)
-
-
-class StudentClearanceDocumentForm:
-    pass
 
 
 @login_required
@@ -192,37 +195,64 @@ def student_upload_clearance(request):
     if request.user.is_staff or request.user.is_superuser:
         return redirect('home')  # Redirect staff/superuser to home
 
-    student = request.user.student  # Assuming Student has a user FK
+    student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
 
     if request.method == 'GET':
-        form = StudentClearanceDocumentForm(initial={'student': student})
+        form = StudentClearanceDocumentForm()
     else:
         form = StudentClearanceDocumentForm(request.POST, request.FILES)
         if form.is_valid():
+
+            semester = form.cleaned_data['semester']
+            session = form.cleaned_data['session']
+            clearance_type = form.cleaned_data['clearance_type']
+            document_type = form.cleaned_data['document_type']
+            description = form.cleaned_data['description']
+            file = form.cleaned_data['file']
+
             # Save uploaded document
             new_document = form.save(commit=False)  # Don't commit yet
             new_document.student = student  # Associate document with student
             new_document.save()
 
-            # Get selected clearance type from form
-            clearance_type = form.cleaned_data['clearance_type']
-
             # Create StudentClearanceRequest object if necessary
             clearance_request, created = StudentClearanceRequests.objects.get_or_create(
                 student=student,
-                semester=form.cleaned_data['semester'],
-                session=form.cleaned_data['session'],
+                semester=semester,
+                session=session,
+            )
+
+            clearance_document = ClearanceDocument.objects.create(
+                file=file,
+                description=description,
+                document_type=document_type,
             )
 
             # Update clearance request based on clearance type
             if clearance_type == 'department':
-                clearance_request.department_clearance = new_document
+                department = Department.objects.get_or_create(student=student, status__in=['Pending', 'Incomplete'])
+                department.documents.add(clearance_document)
+
+                department.save()
+
             elif clearance_type == 'faculty':
-                clearance_request.faculty_clearance = new_document
+                faculty = Faculty.objects.get_or_create(student=student, status__in=['Pending', 'Incomplete'])
+                faculty.documents.add(clearance_document)
+
+                faculty.save()
+
             elif clearance_type == 'hostel':
-                clearance_request.hostel_clearance = new_document
+                hostel = Hostel.objects.get_or_create(student=student, status__in=['Pending', 'Incomplete'])
+                hostel.documents.add(clearance_document)
+
+                hostel.save()
+
             elif clearance_type == 'bursary':
-                clearance_request.bursary_clearance = new_document
+                bursary = Bursary.objects.get_or_create(student=student, status__in=['Pending', 'Incomplete'])
+                bursary.documents.add(clearance_document)
+
+                bursary.save()
+
             else:
                 # Handle other clearance types if needed
                 pass
@@ -240,7 +270,7 @@ def student_clearance_status(request):
     if request.user.is_staff or request.user.is_superuser:
         return redirect('home')  # Redirect staff/superuser to home
 
-    student = request.user.student  # Assuming Student has a user FK
+    student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
     current_session = get_current_session(student)  # Replace with your logic to get current session
 
     # Prioritize Omega semester for the current session
@@ -257,30 +287,15 @@ def student_clearance_status(request):
             semester=StudentClearanceRequests.SEMESTER_CHOICES[0][0]  # Alpha
         ).first()
 
-    # Check for clearance status in linked objects (if any)
-    department_status = 'N/A'
-    faculty_status = 'N/A'
-    hostel_status = 'N/A'
-    bursary_status = 'N/A'
-
-    if clearance_request:
-        if clearance_request.department_clearance:
-            department_status = clearance_request.department_clearance.status
-        if clearance_request.faculty_clearance:
-            faculty_status = clearance_request.faculty_clearance.status
-        if clearance_request.hostel_clearance:
-            hostel_status = clearance_request.hostel_clearance.status
-        if clearance_request.bursary_clearance:
-            bursary_status = clearance_request.bursary_clearance.status
-
     context = {
-        'department_status': department_status,
-        'faculty_status': faculty_status,
-        'hostel_status': hostel_status,
-        'bursary_status': bursary_status,
+        'department_status': clearance_request.department.status,
+        'faculty_status': clearance_request.faculty.status,
+        'hostel_status': clearance_request.hostel.status,
+        'bursary_status': clearance_request.bursary.status,
     }
 
     return render(request, 'student_clearance_status.html', context)
+
 
 def get_current_session(student):
     left_side = []
@@ -295,7 +310,7 @@ def get_current_session(student):
 
     return f"{max(left_side)}/{max(right_side)}"
 
-@login_required
+# @login_required
 def staff_view_pending_clearances(request):
     if not request.user.is_staff:
         return redirect('home')  # Redirect non-staff users to home

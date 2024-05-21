@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="col-lg-12">
+    <div class="rts-reviewd-area-dashed table-responsive" style="white-space: nowrap;">
+
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                <h5 class="title">Clearance Status</h5>
+                <table class="table-reviews quiz mb--0">
+                    <thead>
+                    <tr>
+                        <th style="width: 70%;">Section</th>
+                        <th>Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <span class="questions">Bursary</span>
+                            </td>
+                            <td>
+                                <div class="hold-area">
+                                    {% if bursary_status == "Incomplete" %}
+                                    <span class="hold">Incomplete</span>
+                                    {% elif bursary_status == "Pending" %}
+                                    <span class="processing">Pending</span>
+                                    {% else %}
+                                    <span class="success">Completed</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questions">Faculty</span>
+                            </td>
+                            <td>
+                                <div class="hold-area">
+                                    {% if faculty_status == "Incomplete" %}
+                                    <span class="hold">Incomplete</span>
+                                    {% elif faculty_status == "Pending" %}
+                                    <span class="processing">Pending</span>
+                                    {% else %}
+                                    <span class="success">Completed</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questions">Department</span>
+                            </td>
+                            <td>
+                                <div class="hold-area">
+                                    {% if department_status == "Incomplete" %}
+                                    <span class="hold">Incomplete</span>
+                                    {% elif department_status == "Pending" %}
+                                    <span class="processing">Pending</span>
+                                    {% else %}
+                                    <span class="success">Completed</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="questions">Hostel</span>
+                            </td>
+                            <td>
+                                <div class="hold-area">
+                                    {% if hostel_status == "Incomplete" %}
+                                    <span class="hold">Incomplete</span>
+                                    {% elif hostel_status == "Pending" %}
+                                    <span class="processing">Pending</span>
+                                    {% else %}
+                                    <span class="success">Completed</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}

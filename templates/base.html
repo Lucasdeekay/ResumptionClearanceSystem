@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumption Clearance System </title>
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/images/fav.png' %}">
+    <!-- fontawesome 6.4.2 -->
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/fontawesome-6.css' %}">
+    <!-- swiper Css 10.2.0 -->
+    <link rel="stylesheet" href="{% static 'assets/css/plugins/swiper.min.css' %}">
+    <!-- magnific popup css -->
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/magnific-popup.css' %}">
+    <!-- Bootstrap 5.0.2 -->
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/bootstrap.min.css' %}">
+    <!-- jquery ui css -->
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/jquery-ui.css' %}">
+    <!-- metismenu scss -->
+    <link rel="stylesheet" href="{% static 'assets/css/vendor/metismenu.css' %}">
+    <!-- custom style css -->
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- header style one -->
+    <!-- header style one -->
+    <header class="header-one v-2 header--sticky">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="header-one-wrapper">
+                        <div class="left-side-header">
+                            <a href="index.html" class="logo-area">
+                                <img src="{% static 'assets/images/logo/logo-1.svg' %}" alt="logo">
+                            </a>
+
+                            <div class="main-nav-one">
+                                <nav>
+                                    <ul>
+                                        <li style="position: static;">
+                                            <a class="nav-link" href="{% url 'student_dashboard' %}">Profile</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link" href="{% url 'student_clearance_request' %}">Request Clearance</a>
+                                        </li>
+                                        <li style="position: static;">
+                                            <a class="nav-link" href="{% url 'student_upload_clearance' %}">Upload Document</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link" href="{% url 'student_clearance_status' %}">Clearance Status</a>
+                                        </li>
+                                        <li>
+                                            <a class="nav-link" href="{% url 'change_password' %}">Settings</a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+
+                        </div>
+                        <div class="header-right-area-one">
+                            <div class="buttons-area">
+                                <a href="{% url 'logout' %}" class="rts-btn btn-primary">Log Out</a>
+                            </div>
+                            <div class="menu-btn" id="menu-btn">
+                                <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <rect y="14" width="20" height="2" fill="#1F1F25"></rect>
+                                    <rect y="7" width="20" height="2" fill="#1F1F25"></rect>
+                                    <rect width="20" height="2" fill="#1F1F25"></rect>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- header style end -->
+    <!-- header style end -->
+
+
+    <!-- dashboard banner area start -->
+    <div class="dashboard-banner-area-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="dashboard-banner-area-start bg_image  student-dashboard">
+                        <div class="author-profile-image-and-name">
+                            <div class="profile-pic">
+                                <img src="{% static 'assets/images/dashboard/04.png' %}" alt="dashboard">
+                            </div>
+                            <div class="name-desig">
+                                <h1 class="title">Jon Adam</h1>
+                                <div class="course-vedio">
+                                    <div class="single">
+                                        <i class="fa-thin fa-book"></i>
+                                        <span>jonadams@gmail.com</span>
+                                    </div>
+                                    <div class="single">
+                                        <i class="fa-thin fa-file-certificate"></i>
+                                        <span>Computer Science</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- dashboard banner area end -->
+
+
+
+    <!-- rts dahboard-area-main-wrapper -->
+    <div class="dashboard--area-main pt--100">
+        <div class="container">
+            <div class="row g-5">
+
+                {% block content %}
+                {% endblock content %}
+            </div>
+        </div>
+    </div>
+    <!-- rts dahboard-area-main-wrapper end -->
+
+
+    <div class="rts-section-gap">
+
+    </div>
+
+
+
+    <!-- footer dashboards area -->
+    <div class="footer-dashboard">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer-dashboard-inner">
+                        <p>Copyright © 2024 All Rights Reserved by <a href="#">Studyhub</a></p>
+                        <a href="index.html">
+                            <img src="{% static 'assets/images/logo/logo-4.svg' %}" alt="logo">
+                        </a>
+                        <div class="social-area-dashboard-footer">
+                            <ul>
+                                <li><a href="#"><i class="fa-brands fa-facebook-f"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-instagram"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-linkedin"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-pinterest"></i></a></li>
+                                <li><a href="#"><i class="fa-brands fa-youtube"></i></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- footer dashboards area end -->
+
+
+    <!-- header style two -->
+    <div id="side-bar" class="side-bar header-two">
+        <button class="close-icon-menu"><i class="far fa-times"></i></button>
+        <div class="mobile-menu-main">
+            <nav class="nav-main mainmenu-nav mt--30">
+                <ul class="mainmenu metismenu" id="mobile-menu-active">
+                    <li>
+                        <a href="#" class="main">Home</a>
+                    </li>
+                    <li>
+                        <a href="#" class="main">Pages</a>
+                    </li>
+                    <li>
+                        <a href="#" class="main">Course</a>
+                    </li>
+                    <li>
+                        <a href="#" class="main">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="#" class="main">Blog</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="buttons-area">
+                <a href="{% url 'logout' %}" class="rts-btn btn-primary">Log Out</a>
+            </div>
+
+        </div>
+        <!-- mobile menu area end -->
+    </div>
+    <!-- header style two End -->
+
+    <!-- rts backto top start -->
+    <div class="progress-wrap">
+        <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
+            <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98" style="transition: stroke-dashoffset 10ms linear 0s; stroke-dasharray: 307.919, 307.919; stroke-dashoffset: 307.919;"></path>
+        </svg>
+    </div>
+    <!-- rts backto top end -->
+
+    <div id="anywhere-home" class="">
+    </div>
+
+    <!-- all scripts -->
+<!-- jquery min js -->
+<script src="{% static 'assets/js/vendor/jquery.min.js' %}"></script>
+<!-- jquery ui js -->
+<script src="{% static 'assets/js/vendor/jquery-ui.js' %}"></script>
+<!-- metismenu js -->
+<script src="{% static 'assets/js/vendor/metismenu.js' %}"></script>
+<!-- magnific popup js-->
+<script src="{% static 'assets/js/vendor/magnifying-popup.js' %}"></script>
+<!-- swiper JS 10.2.0 -->
+<script src="{% static 'assets/js/plugins/swiper.js' %}"></script>
+<!-- counterup js -->
+<script src="{% static 'assets/js/plugins/counterup.js' %}"></script>
+<!-- waypoint js -->
+<script src="{% static 'assets/js/vendor/waypoint.js' %}"></script>
+<!-- wow js -->
+<script src="{% static 'assets/js/vendor/waw.js' %}"></script>
+<!-- isotop mesonary -->
+<script src="{% static 'assets/js/plugins/isotop.js' %}"></script>
+<!-- jquery imageloaded -->
+<script src="{% static 'assets/js/plugins/imagesloaded.pkgd.min.js' %}"></script>
+<!-- resize sensor js -->
+<script src="{% static 'assets/js/plugins/resizer-sensor.js' %}"></script>
+<!-- sticky sidebar -->
+<script src="{% static 'assets/js/plugins/sticky-sidebar.js' %}"></script>
+<!-- gsap twinmax js -->
+<script src="{% static 'assets/js/plugins/twinmax.js' %}"></script>
+<!-- chroma js -->
+<script src="{% static 'assets/js/vendor/chroma.min.js' %}"></script>
+<!-- bootstrap 5.0.2 -->
+<script src="{% static 'assets/js/plugins/bootstrap.min.js' %}"></script>
+<!-- dymanic Contact Form -->
+<script src="{% static 'assets/js/plugins/contact.form.js' %}"></script>
+<!-- calender js -->
+<script src="{% static 'assets/js/plugins/calender.js' %}"></script>
+<!-- main Js -->
+<script src="{% static 'assets/js/main.js' %}"></script>
+
+
+</body>
+
+</html>

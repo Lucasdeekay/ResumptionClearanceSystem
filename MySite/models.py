@@ -111,14 +111,15 @@ class StudentClearanceRequests(models.Model):
     session = models.CharField(max_length=11, choices=SESSION_CHOICES, default=SESSION_CHOICES[0][0])
 
     # Foreign keys to clearance requirement models (inherited by Faculty, Department, Hostel, Bursary)
-    faculty_clearance = models.ForeignKey(Faculty, on_delete=models.CASCADE, blank=True, null=True,
+    faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, blank=True, null=True,
                                           related_name='faculty_clearance_requests')
-    department_clearance = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True,
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True,
                                              related_name='department_clearance_requests')
-    hostel_clearance = models.ForeignKey(Hostel, on_delete=models.CASCADE, blank=True, null=True,
+    hostel = models.ForeignKey(Hostel, on_delete=models.CASCADE, blank=True, null=True,
                                          related_name='hostel_clearance_requests')
-    bursary_clearance = models.ForeignKey(Bursary, on_delete=models.CASCADE, blank=True, null=True,
+    bursary = models.ForeignKey(Bursary, on_delete=models.CASCADE, blank=True, null=True,
                                           related_name='bursary_clearance_requests')
+
 
     def __str__(self):
         return f"{self.student} - {self.semester} ({self.session})"

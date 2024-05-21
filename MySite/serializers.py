@@ -1,17 +1,11 @@
 from rest_framework import serializers
 from .models import (
-    Student, ClearanceRequirement, Department, Faculty, Hostel, Bursary, StudentClearanceRequests, ClearanceDocument
+    Student, Department, Faculty, Hostel, Bursary, StudentClearanceRequests, ClearanceDocument
 )
 
 class ClearanceDocumentSerializer(serializers.ModelSerializer):
     class Meta:
         model = ClearanceDocument
-        fields = '__all__'  # Serialize all fields
-
-
-class ClearanceRequirementSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ClearanceRequirement
         fields = '__all__'  # Serialize all fields
 
 

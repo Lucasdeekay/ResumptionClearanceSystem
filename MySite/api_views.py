@@ -2,10 +2,9 @@ from rest_framework import viewsets, serializers
 from rest_framework.permissions import IsAuthenticated
 
 from .models import (
-    Student, ClearanceRequirement, Department, Faculty, Hostel, Bursary, StudentClearanceRequests, ClearanceDocument
+    Student, Department, Faculty, Hostel, Bursary, StudentClearanceRequests, ClearanceDocument
 )
-from .serializers import (
-    ClearanceRequirementSerializer, DepartmentSerializer, FacultySerializer, HostelSerializer,
+from .serializers import ( DepartmentSerializer, FacultySerializer, HostelSerializer,
     BursarySerializer, StudentSerializer, StudentClearanceRequestsSerializer, ClearanceDocumentSerializer
 )
 
@@ -16,14 +15,6 @@ class ClearanceDocumentViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [IsAuthenticated]  # Require authentication
     queryset = ClearanceDocument.objects.all()
     serializer_class = ClearanceDocumentSerializer
-
-class ClearanceRequirementViewSet(viewsets.ReadOnlyModelViewSet):
-    """
-    API endpoint for viewing clearance requirements
-    """
-    permission_classes = [IsAuthenticated]  # Require authentication
-    queryset = ClearanceRequirement.objects.all()
-    serializer_class = ClearanceRequirementSerializer
 
 
 class DepartmentViewSet(viewsets.ReadOnlyModelViewSet):

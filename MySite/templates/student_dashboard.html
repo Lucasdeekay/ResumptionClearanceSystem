@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="col-lg-12  rts-sticky-column-item">
+    <div class="right-sidebar-my-profile-dash theiaStickySidebar pt--30">
+        <h5 class="title">My Profile</h5>
+        <!-- single My portfolio start-->
+        <div class="my-single-portfolio-dashed">
+            <div class="name">First Name:</div>
+            <div class="value">{{ student.first_name }}</div>
+        </div>
+        <!-- single My portfolio end-->
+        <!-- single My portfolio start-->
+        <div class="my-single-portfolio-dashed">
+            <div class="name">Last Name:</div>
+            <div class="value">{{ student.last_name }}</div>
+        </div>
+        <!-- single My portfolio end-->
+        <!-- single My portfolio start-->
+        <div class="my-single-portfolio-dashed">
+            <div class="name">Middle Name:</div>
+            <div class="value">{{ student.middle_name }}</div>
+        </div>
+        <!-- single My portfolio end-->
+        <!-- single My portfolio start-->
+        <div class="my-single-portfolio-dashed">
+            <div class="name">Matric No:</div>
+            <div class="value">{{ student.matric_no }}</div>
+        </div>
+        <!-- single My portfolio end-->
+        <!-- single My portfolio start-->
+        <div class="my-single-portfolio-dashed">
+            <div class="name">Email:</div>
+            <div class="value">{{ student.email }}</div>
+        </div>
+        <!-- single My portfolio end-->
+    </div>
+</div>
+{% endblock content %}
