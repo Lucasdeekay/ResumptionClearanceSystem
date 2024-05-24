@@ -309,85 +309,67 @@ def get_current_session(student):
         right_side.append(int(second))
 
     return f"{max(left_side)}/{max(right_side)}"
-
+#
 # @login_required
-def staff_view_pending_clearances(request):
-    if not request.user.is_staff:
-        return redirect('home')  # Redirect non-staff users to home
-
-    user_groups = request.user.groups.all()
-
-    # Filter students based on user groups (if any)
-    students = Student.objects.all()
-    if user_groups:
-        clearance_type = None
-        if 'hostel' in [group.name.lower() for group in user_groups]:
-            clearance_type = Hostel
-        elif 'department' in [group.name.lower() for group in user_groups]:
-            clearance_type = Department
-        elif 'bursary' in [group.name.lower() for group in user_groups]:
-            clearance_type = Bursary
-        elif 'faculty' in [group.name.lower() for group in user_groups]:
-            clearance_type = Faculty
-
-        if clearance_type:
-            pending_requests = StudentClearanceRequests.objects.filter(
-                student__in=students,
-                clearance_type=clearance_type,
-                status='pending'
-            )
-            students = pending_requests.values_list('student', flat=True).distinct()  # Get unique students
-
-    context = {'students': students}
-    return render(request, 'staff_view_pending_clearances.html', context)
-
-
-@login_required
-def staff_view_student_clearance_details(request, student_id):
-    if not request.user.is_staff:
-        return redirect('home')  # Redirect non-staff users to home
-
-    user_groups = request.user.groups.all()
-    student = get_object_or_404(Student, pk=student_id)
-
-    # Filter pending requests based on user groups (if any)
-    pending_requests = StudentClearanceRequests.objects.filter(
-        student=student,
-        status='pending'
-    )
-    if user_groups:
-        clearance_type = None
-        if 'hostel' in [group.name.lower() for group in user_groups]:
-            clearance_type = Hostel
-        elif 'department' in [group.name.lower() for group in user_groups]:
-            clearance_type = Department
-        elif 'bursary' in [group.name.lower() for group in user_groups]:
-            clearance_type = Bursary
-        elif 'faculty' in [group.name.lower() for group in user_groups]:
-            clearance_type = Faculty
-
-        if clearance_type:
-            pending_requests = pending_requests.filter(clearance_type=clearance_type)
-
-    context = {
-        'student': student,
-        'pending_requests': pending_requests,
-        'can_send_email': len(user_groups) > 0 and clearance_type is not None,
-    }
-
-    if request.method == 'POST' and context['can_send_email']:
-        subject = request.POST.get('subject')
-        message = request.POST.get('message')
-        if subject and message:
-            send_mail(
-                subject,
-                message,
-                'staff@yourdomain.com',  # Replace with email sender
-                [student.email],  # Recipient email
-                fail_silently=False,  # Set to True to hide errors
-            )
-            return redirect('staff_view_student_clearance_details', student_id=student_id)
-        else:
-            context['error_message'] = 'Subject and message are required to send email.'
-
-    return render(request, 'staff_view_student_clearance_details.html', context)
+# def staff_view_pending_clearances(request):
+#     if not request.user.is_staff:
+#         return redirect('home')  # Redirect non-staff users to home
+#
+#     user_groups = request.user.groups.all()
+#
+#     if user_groups:
+#         if 'hostel' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Hostel.objects.filter(status='pending')
+#         elif 'department' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Department.objects.filter(status='pending')
+#         elif 'bursary' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Bursary.objects.filter(status='pending')
+#         elif 'faculty' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Faculty.objects.filter(status='pending')
+#
+#     # students = pending_requests.values_list('student', flat=True).distinct()  # Get unique students
+#
+#     context = {'pending_requests': pending_requests}
+#     return render(request, 'staff_view_pending_clearances.html', context)
+#
+#
+# @login_required
+# def staff_view_student_clearance_details(request, student_id):
+#     if not request.user.is_staff:
+#         return redirect('home')  # Redirect non-staff users to home
+#
+#     user_groups = request.user.groups.all()
+#     student = get_object_or_404(Student, pk=student_id)
+#
+#     if user_groups:
+#         if 'hostel' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Hostel.objects.filter(student=student, status='pending')
+#         elif 'department' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Department.objects.filter(student=student, status='pending')
+#         elif 'bursary' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Bursary.objects.filter(student=student, status='pending')
+#         elif 'faculty' in [group.name.lower() for group in user_groups]:
+#             pending_requests = Faculty.objects.filter(student=student, status='pending')
+#
+#
+#     context = {
+#         'student': student,
+#         'pending_requests': pending_requests,
+#     }
+#
+#     if request.method == 'POST' and context['can_send_email']:
+#         subject = request.POST.get('subject')
+#         message = request.POST.get('message')
+#         if subject and message:
+#             send_mail(
+#                 subject,
+#                 message,
+#                 'staff@yourdomain.com',  # Replace with email sender
+#                 [student.email],  # Recipient email
+#                 fail_silently=False,  # Set to True to hide errors
+#             )
+#             return redirect('staff_view_student_clearance_details', student_id=student_id)
+#         else:
+#             context['error_message'] = 'Subject and message are required to send email.'
+#
+#     return render(request, 'staff_view_student_clearance_details.html', context)
