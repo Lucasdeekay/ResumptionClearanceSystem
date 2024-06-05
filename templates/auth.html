@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resumption Clearance System </title>
-    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/images/fav.png' %}">
+    <link rel="shortcut icon" type="image/x-icon" href="{% static 'assets/images/logo.png' %}">
     <!-- fontawesome 6.4.2 -->
     <link rel="stylesheet" href="{% static 'assets/css/plugins/fontawesome-6.css' %}">
     <!-- swiper Css 10.2.0 -->
@@ -32,7 +32,8 @@
             <div class="col-lg-12">
                 <div class="header-tranaparent-main-wrapper">
                     <a href="{% url 'student_dashboard' %}" class="logo-area">
-                        <img src="{% static 'assets/images/logo/logo-1.svg' %}" alt="logo">
+                        <img style="max-width:50px" src="{% static 'assets/images/logo.png' %}" alt="logo">
+                        <h6 style="display:inline-block; text-decoration:none; margin-left:5px">DOMINION UNIVERSITY</h6>
                     </a>
 
                     {% block auth_top_nav %}

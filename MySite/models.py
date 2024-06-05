@@ -40,7 +40,7 @@ class ClearanceRequirement(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     documents = models.ManyToManyField(ClearanceDocument, blank=True)
     status = models.CharField(max_length=255, default="pending", choices=(
-    ('pending', 'Pending'), ('completed', 'Completed'), ('incomplete', 'Incomplete')))
+        ('pending', 'Pending'), ('completed', 'Completed'), ('incomplete', 'Incomplete')))
 
     class Meta:
         abstract = True
@@ -60,10 +60,9 @@ DEPARTMENT_CHOICES = (
     ('criminology', 'Criminology'),
 )
 
+
 class Department(ClearanceRequirement):
     name = models.CharField(max_length=255, choices=DEPARTMENT_CHOICES, unique=True)
-
-
 
 
 FACULTY_CHOICES = (
@@ -71,9 +70,9 @@ FACULTY_CHOICES = (
     ('arts_and_management_sciences', 'Arts and Management Sciences'),
 )
 
+
 class Faculty(ClearanceRequirement):
     name = models.CharField(max_length=255, choices=FACULTY_CHOICES, unique=True)
-
 
 
 HOSTEL_CHOICES = (
@@ -83,6 +82,7 @@ HOSTEL_CHOICES = (
     ('new_hall', 'New Hall'),
     ('rehoboth_hall', 'Rehoboth Hall'),
 )
+
 
 class Hostel(models.Model):
     """
@@ -99,6 +99,7 @@ class Bursary(ClearanceRequirement):
     total_fees = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
     outstanding_fees = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)
 
+
 class StudentClearanceRequests(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE)
     SEMESTER_CHOICES = (
@@ -112,15 +113,13 @@ class StudentClearanceRequests(models.Model):
 
     # Foreign keys to clearance requirement models (inherited by Faculty, Department, Hostel, Bursary)
     faculty = models.ForeignKey(Faculty, on_delete=models.CASCADE, blank=True, null=True,
-                                          related_name='faculty_clearance_requests')
+                                related_name='faculty_clearance_requests')
     department = models.ForeignKey(Department, on_delete=models.CASCADE, blank=True, null=True,
-                                             related_name='department_clearance_requests')
+                                   related_name='department_clearance_requests')
     hostel = models.ForeignKey(Hostel, on_delete=models.CASCADE, blank=True, null=True,
-                                         related_name='hostel_clearance_requests')
+                               related_name='hostel_clearance_requests')
     bursary = models.ForeignKey(Bursary, on_delete=models.CASCADE, blank=True, null=True,
-                                          related_name='bursary_clearance_requests')
-
+                                related_name='bursary_clearance_requests')
 
     def __str__(self):
         return f"{self.student} - {self.semester} ({self.session})"
-

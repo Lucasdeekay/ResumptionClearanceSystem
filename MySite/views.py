@@ -1,3 +1,4 @@
+from django.contrib import messages
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -113,8 +114,7 @@ def retrieve_password_view(request, reset_uid):
 
 @login_required
 def change_password_view(request):
-    # student = Student.objects.get(user=request.user)
-    student = 2
+    student = Student.objects.get(user=request.user)
     if request.method == 'POST':
         old_password = request.POST['old_password']
         new_password = request.POST['new_password']
@@ -136,7 +136,8 @@ def logout_view(request):
 @login_required
 def student_dashboard_view(request):
     if request.user.is_staff or request.user.is_superuser:
-        return redirect('home')  # Redirect staff/superuser to home
+        messages.error("User does not have authorized access")
+        return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
     context = {'student': student}
@@ -146,7 +147,8 @@ def student_dashboard_view(request):
 @login_required
 def student_clearance_request(request):
     if request.user.is_staff or request.user.is_superuser:
-        return redirect('home')  # Redirect staff/superuser to home
+        messages.error("User does not have authorized access")
+        return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
 
@@ -186,14 +188,15 @@ def student_clearance_request(request):
             clearance_request.save()
             return redirect('student_dashboard')  # Redirect to student dashboard
 
-    context = {'form': form}
+    context = {'form': form, 'student': student}
     return render(request, 'student_clearance_request.html', context)
 
 
 @login_required
 def student_upload_clearance(request):
     if request.user.is_staff or request.user.is_superuser:
-        return redirect('home')  # Redirect staff/superuser to home
+        messages.error("User does not have authorized access")
+        return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
 
@@ -261,14 +264,15 @@ def student_upload_clearance(request):
 
             return redirect('student_dashboard')  # Redirect to student dashboard
 
-    context = {'form': form}
+    context = {'form': form, 'student': student}
     return render(request, 'student_upload_clearance.html', context)
 
 
 @login_required
 def student_clearance_status(request):
     if request.user.is_staff or request.user.is_superuser:
-        return redirect('home')  # Redirect staff/superuser to home
+        messages.error("User does not have authorized access")
+        return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
     current_session = get_current_session(student)  # Replace with your logic to get current session
@@ -292,6 +296,7 @@ def student_clearance_status(request):
         'faculty_status': clearance_request.faculty.status,
         'hostel_status': clearance_request.hostel.status,
         'bursary_status': clearance_request.bursary.status,
+        'student': student,
     }
 
     return render(request, 'student_clearance_status.html', context)
@@ -309,67 +314,3 @@ def get_current_session(student):
         right_side.append(int(second))
 
     return f"{max(left_side)}/{max(right_side)}"
-#
-# @login_required
-# def staff_view_pending_clearances(request):
-#     if not request.user.is_staff:
-#         return redirect('home')  # Redirect non-staff users to home
-#
-#     user_groups = request.user.groups.all()
-#
-#     if user_groups:
-#         if 'hostel' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Hostel.objects.filter(status='pending')
-#         elif 'department' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Department.objects.filter(status='pending')
-#         elif 'bursary' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Bursary.objects.filter(status='pending')
-#         elif 'faculty' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Faculty.objects.filter(status='pending')
-#
-#     # students = pending_requests.values_list('student', flat=True).distinct()  # Get unique students
-#
-#     context = {'pending_requests': pending_requests}
-#     return render(request, 'staff_view_pending_clearances.html', context)
-#
-#
-# @login_required
-# def staff_view_student_clearance_details(request, student_id):
-#     if not request.user.is_staff:
-#         return redirect('home')  # Redirect non-staff users to home
-#
-#     user_groups = request.user.groups.all()
-#     student = get_object_or_404(Student, pk=student_id)
-#
-#     if user_groups:
-#         if 'hostel' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Hostel.objects.filter(student=student, status='pending')
-#         elif 'department' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Department.objects.filter(student=student, status='pending')
-#         elif 'bursary' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Bursary.objects.filter(student=student, status='pending')
-#         elif 'faculty' in [group.name.lower() for group in user_groups]:
-#             pending_requests = Faculty.objects.filter(student=student, status='pending')
-#
-#
-#     context = {
-#         'student': student,
-#         'pending_requests': pending_requests,
-#     }
-#
-#     if request.method == 'POST' and context['can_send_email']:
-#         subject = request.POST.get('subject')
-#         message = request.POST.get('message')
-#         if subject and message:
-#             send_mail(
-#                 subject,
-#                 message,
-#                 'staff@yourdomain.com',  # Replace with email sender
-#                 [student.email],  # Recipient email
-#                 fail_silently=False,  # Set to True to hide errors
-#             )
-#             return redirect('staff_view_student_clearance_details', student_id=student_id)
-#         else:
-#             context['error_message'] = 'Subject and message are required to send email.'
-#
-#     return render(request, 'staff_view_student_clearance_details.html', context)

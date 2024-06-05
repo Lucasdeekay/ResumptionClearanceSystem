@@ -26,7 +26,5 @@ urlpatterns = [
     path('student-clearance-request/', views.student_clearance_request, name='student_clearance_request'),
     path('student-upload-clearance/', views.student_upload_clearance, name='student_upload_clearance'),
     path('student-clearance-status/', views.student_clearance_status, name='student_clearance_status'),
-    # path('staff-view-pending-clearances/', views.staff_view_pending_clearances, name='staff_view_pending_clearances'),
-    # path('staff-view-student-clearance-details/<int:student_id>', views.staff_view_student_clearance_details, name='staff_view_student_clearance_details'),
     path('api/', include(router.urls)),
 ]

@@ -8,31 +8,31 @@
         <!-- single My portfolio start-->
         <div class="my-single-portfolio-dashed">
             <div class="name">First Name:</div>
-            <div class="value">{{ student.first_name }}</div>
+            <div class="value">{{ student.first_name|default:'John' }}</div>
         </div>
         <!-- single My portfolio end-->
         <!-- single My portfolio start-->
         <div class="my-single-portfolio-dashed">
             <div class="name">Last Name:</div>
-            <div class="value">{{ student.last_name }}</div>
+            <div class="value">{{ student.last_name|default:'Adams' }}</div>
         </div>
         <!-- single My portfolio end-->
         <!-- single My portfolio start-->
         <div class="my-single-portfolio-dashed">
             <div class="name">Middle Name:</div>
-            <div class="value">{{ student.middle_name }}</div>
+            <div class="value">{{ student.middle_name|default:'Ade' }}</div>
         </div>
         <!-- single My portfolio end-->
         <!-- single My portfolio start-->
         <div class="my-single-portfolio-dashed">
             <div class="name">Matric No:</div>
-            <div class="value">{{ student.matric_no }}</div>
+            <div class="value">{{ student.matric_no|default:'DU0978' }}</div>
         </div>
         <!-- single My portfolio end-->
         <!-- single My portfolio start-->
         <div class="my-single-portfolio-dashed">
             <div class="name">Email:</div>
-            <div class="value">{{ student.email }}</div>
+            <div class="value">{{ student.email|default:'jonadams@gmail.com' }}</div>
         </div>
         <!-- single My portfolio end-->
     </div>
