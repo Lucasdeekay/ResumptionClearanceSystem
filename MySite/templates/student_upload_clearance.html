@@ -9,7 +9,13 @@
             <div class="tab-pane fade show active" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
                 <div class="setting-change-password-area">
                     <form action="" method="post">
-                        {% csrf_token %} {{ form.as_p }}
+                        {% csrf_token %}
+                        <div id="toast">
+                            {% for message in messages %}
+                            <div class="alert alert-info" role="alert"><strong></strong><i>{{ message }}</i></div>
+                            {% endfor %}
+                        </div>
+                        {{ form.as_p }}
                         <button class="rts-btn btn-primary" type="submit">Submit</button>
                     </form>
                 </div>

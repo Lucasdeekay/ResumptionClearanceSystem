@@ -21,13 +21,13 @@ def login_view(request):
             user = authenticate(username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('home')  # Redirect to your home page after successful login
+                return redirect('student_dashboard')  # Redirect to your home page after successful login
             else:
-                form.add_error_message('Invalid username or password')
+                messages.error(request, 'Invalid username or password')
+                return redirect('login')
     else:
         form = LoginForm()
     context = {'form': form}
-    # return render(request, 'login.html', context)
     return render(request, 'login.html', context)
 
 
@@ -42,11 +42,11 @@ def register_view(request):
         confirm_password = request.POST['confirm_password']
 
         if Student.objects.filter(matric_number=matric_number).exists or not Student.objects.filter(email=email).exists:
-            context = {'error': 'User already exists.'}
-            return render(request, 'register.html', context)
+            messages.error(request, 'User already exists.')
+            return redirect('register')
         elif password != confirm_password:
-            context = {'error': 'Password does not match.'}
-            return render(request, 'register.html', context)
+            messages.error(request, 'Password does not match.')
+            return redirect('register')
         else:
             # Create a new User object
             user = User.objects.create_user(username=matric_number, password=password)
@@ -61,7 +61,7 @@ def register_view(request):
                 email=email,
             )
             student.save()
-
+            messages.error(request, 'Registration successful.')
             return redirect('login')  # Redirect to your home page after successful registration
 
     else:
@@ -83,14 +83,13 @@ def forgot_password_view(request):
             email_from = None  # Replace with your email address
             email_to = student.email
             send_mail(mail_subject, message, email_from, [email_to])
-            context = {'message': 'A password reset link has been sent to your email.'}
-            return render(request, 'forgot_password_sent.html', context)
+            messages.success(request, 'A password reset link has been sent to your email.')
+            return redirect('login')
         except User.DoesNotExist:
-            context = {'error': 'Email address not found.'}
-            return render(request, 'forgot_password.html', context)
+            messages.success(request, 'Email address not found.')
+            return redirect('forgot_password')
     else:
-        context = {}
-    return render(request, 'forgot_password.html', context)
+        return render(request, 'forgot_password.html')
 
 
 def retrieve_password_view(request, reset_uid):
@@ -105,6 +104,7 @@ def retrieve_password_view(request, reset_uid):
             password = form.clean_new_password()
             student.set_password(password)
             student.save()
+            messages.success(request, 'Account password has been successfully reset.')
             return redirect('login')  # Redirect to login after successful password change
     else:
         form = PasswordChangeForm(student)
@@ -122,8 +122,11 @@ def change_password_view(request):
         if new_password == confirm_password and student.user.check_password(old_password):
             student.set_password(new_password)
             student.save()
-            return redirect('student_dashboard')  # Redirect to login after successful password change
-
+            messages.success(request, "Password successfully changed")
+            return redirect('student_dashboard')
+        else:
+            messages.success(request, "Password does not match")
+            return redirect('change_password')
     return render(request, 'change_password.html')
 
 
@@ -136,7 +139,7 @@ def logout_view(request):
 @login_required
 def student_dashboard_view(request):
     if request.user.is_staff or request.user.is_superuser:
-        messages.error("User does not have authorized access")
+        messages.error(request, "User does not have authorized access")
         return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
@@ -147,7 +150,7 @@ def student_dashboard_view(request):
 @login_required
 def student_clearance_request(request):
     if request.user.is_staff or request.user.is_superuser:
-        messages.error("User does not have authorized access")
+        messages.error(request, "User does not have authorized access")
         return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
@@ -186,7 +189,8 @@ def student_clearance_request(request):
                 bursary=bursary_clearance,
             )
             clearance_request.save()
-            return redirect('student_dashboard')  # Redirect to student dashboard
+            messages.error(request, "Clearance request has been successfully submitted")
+            return redirect('student_clearance_request')  # Redirect to student dashboard
 
     context = {'form': form, 'student': student}
     return render(request, 'student_clearance_request.html', context)
@@ -195,7 +199,7 @@ def student_clearance_request(request):
 @login_required
 def student_upload_clearance(request):
     if request.user.is_staff or request.user.is_superuser:
-        messages.error("User does not have authorized access")
+        messages.error(request, "User does not have authorized access")
         return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK
@@ -261,8 +265,8 @@ def student_upload_clearance(request):
                 pass
 
             clearance_request.save()  # Save clearance request with linked document
-
-            return redirect('student_dashboard')  # Redirect to student dashboard
+            messages.error(request, "Clearance request has been successfully submitted")
+            return redirect('student_clearance_request')  # Redirect to student dashboard
 
     context = {'form': form, 'student': student}
     return render(request, 'student_upload_clearance.html', context)
@@ -271,7 +275,7 @@ def student_upload_clearance(request):
 @login_required
 def student_clearance_status(request):
     if request.user.is_staff or request.user.is_superuser:
-        messages.error("User does not have authorized access")
+        messages.error(request, "User does not have authorized access")
         return redirect('login')  # Redirect staff/superuser to home
 
     student = Student.objects.get(user=request.user)  # Assuming Student has a user FK

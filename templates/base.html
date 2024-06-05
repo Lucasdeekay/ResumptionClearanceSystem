@@ -20,6 +20,9 @@
     <link rel="stylesheet" href="{% static 'assets/css/vendor/metismenu.css' %}">
     <!-- custom style css -->
     <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+     <!--  jQuer cdn  -->
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js"
+            integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -204,7 +207,12 @@
 <script src="{% static 'assets/js/plugins/calender.js' %}"></script>
 <!-- main Js -->
 <script src="{% static 'assets/js/main.js' %}"></script>
-
+<script>
+$(function(){
+    $("#toast").fadeIn(5000);
+  $("#toast").fadeOut(5000);
+})
+</script>
 
 </body>
 
