@@ -26,8 +26,10 @@
                                     <span class="hold">Incomplete</span>
                                     {% elif bursary_status == "pending" %}
                                     <span class="processing">Pending</span>
-                                    {% else %}
+                                    {% elif bursary_status == "completed" %}
                                     <span class="success">Completed</span>
+                                    {% else %}
+                                    <span class="hold">{{ bursary_status }}</span>
                                     {% endif %}
                                 </div>
                             </td>
@@ -42,8 +44,10 @@
                                     <span class="hold">Incomplete</span>
                                     {% elif faculty_status == "pending" %}
                                     <span class="processing">Pending</span>
-                                    {% else %}
+                                    {% elif faculty_status == "completed" %}
                                     <span class="success">Completed</span>
+                                    {% else %}
+                                    <span class="hold">{{ faculty_status }}</span>
                                     {% endif %}
                                 </div>
                             </td>
@@ -58,8 +62,10 @@
                                     <span class="hold">Incomplete</span>
                                     {% elif department_status == "pending" %}
                                     <span class="processing">Pending</span>
-                                    {% else %}
+                                    {% elif department_status == "completed" %}
                                     <span class="success">Completed</span>
+                                    {% else %}
+                                    <span class="hold">{{ department_status }}</span>
                                     {% endif %}
                                 </div>
                             </td>
@@ -74,8 +80,10 @@
                                     <span class="hold">Incomplete</span>
                                     {% elif hostel_status == "pending" %}
                                     <span class="processing">Pending</span>
-                                    {% else %}
+                                    {% elif hostel_status == "completed" %}
                                     <span class="success">Completed</span>
+                                    {% else %}
+                                    <span class="hold">{{ hostel_status }}</span>
                                     {% endif %}
                                 </div>
                             </td>

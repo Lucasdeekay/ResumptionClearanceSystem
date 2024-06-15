@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm
 
 from MySite.models import StudentClearanceRequests, DEPARTMENT_CHOICES, FACULTY_CHOICES, HOSTEL_CHOICES, \
-    ClearanceDocument
+    ClearanceDocument, SESSION_CHOICES, SEMESTER_CHOICES
 
 User = get_user_model()
 
@@ -57,10 +57,10 @@ class StudentClearanceRequestForm(forms.Form):
         widget=forms.Select(choices=(('', 'Select Hostel'),) + HOSTEL_CHOICES,
                             attrs={'class': 'form-control p-3', 'required': ''}))
     session = forms.CharField(
-        widget=forms.Select(choices=[('', 'Select Session'), ] + StudentClearanceRequests.SESSION_CHOICES,
+        widget=forms.Select(choices=[('', 'Select Session'), ] + SESSION_CHOICES,
                             attrs={'class': 'form-control p-3', 'required': ''}))
     semester = forms.CharField(
-        widget=forms.Select(choices=(('', 'Select Semester'),) + StudentClearanceRequests.SEMESTER_CHOICES,
+        widget=forms.Select(choices=(('', 'Select Semester'),) + SEMESTER_CHOICES,
                             attrs={'class': 'form-control p-3', 'required': ''}))
 
 
@@ -95,9 +95,9 @@ class StudentClearanceDocumentForm(forms.Form):
             ('bursary', 'Bursary'),
         ), attrs={'class': 'form-control p-3', 'required': ''}))
     session = forms.CharField(
-        widget=forms.Select(choices=[('', 'Select Session'), ] + StudentClearanceRequests.SESSION_CHOICES,
+        widget=forms.Select(choices=[('', 'Select Session'), ] + SESSION_CHOICES,
                             attrs={'class': 'form-control p-3', 'required': ''}))
     semester = forms.CharField(
-        widget=forms.Select(choices=(('', 'Select Semester'),) + StudentClearanceRequests.SEMESTER_CHOICES, attrs={'class': 'form-control p-3', 'required': ''}))
+        widget=forms.Select(choices=(('', 'Select Semester'),) + SEMESTER_CHOICES, attrs={'class': 'form-control p-3', 'required': ''}))
 
 
