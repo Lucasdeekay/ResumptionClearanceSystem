@@ -72,7 +72,8 @@ def forgot_password_view(request):
         email = request.POST['email']
         try:
             user = User.objects.get(email=email)
-            return redirect('password_reset', args=(user.id,))
+            login(request, user)
+            return redirect('retrieve_password')
         except User.DoesNotExist:
             messages.success(request, 'Email address not found.')
             return redirect('forgot_password')
@@ -80,24 +81,22 @@ def forgot_password_view(request):
         return render(request, 'forgot_password.html')
 
 
-def retrieve_password_view(request, reset_uid):
-    try:
-        student = Student.objects.get(pk=reset_uid)
-    except User.DoesNotExist:
-        return redirect('login')  # Redirect to login if user not found
+def retrieve_password_view(request):
+    user = request.user
 
     if request.method == 'POST':
-        form = PasswordChangeForm(student, request.POST)
-        if form.is_valid():
-            password = form.clean_new_password()
-            student.set_password(password)
-            student.save()
-            messages.success(request, 'Account password has been successfully reset.')
-            return redirect('login')  # Redirect to login after successful password change
-    else:
-        form = PasswordChangeForm(student)
-    context = {'form': form}
-    return render(request, 'change_password.html', context)
+        new_password1 = request.POST['new_password'].strip()
+        new_password2 = request.POST['confirm_password'].strip()
+        if new_password1 != new_password2:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('retrieve_password')
+        # Set the new password
+        user.set_password(new_password1)
+        user.save()
+        logout(request)
+        messages.success(request, 'Password reset successfully!')
+        return redirect('login')
+    return render(request, 'password_reset.html')
 
 
 @login_required
